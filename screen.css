@@ -1,0 +1,78 @@
+body{
+	background-color: #f2f2f2;
+	font-family: 'verdana';
+	font-size: 12px;
+}
+
+canvas{
+	margin-top: -60px;	
+	position: fixed;
+	z-index: -1;
+}
+
+p{
+	margin-top: 0;
+}
+
+/* circle */
+.tweet-date:before{
+	content: "";
+	position: absolute;
+	border-radius: 50%;
+	width: 36px;
+	height: 36px;
+	background-color: red;
+	margin-left: -45px;
+	margin-top: -10px;
+}
+
+.tweet-date{
+	position: absolute;
+	margin-left: 147px;
+	margin-top: -51px;
+	padding: 10px 10px 10px 45px;
+}
+
+.tweet-container.container-0 .tweet-date:before{
+	background-color: #00bfd6;	
+}
+
+.tweet-container.container-1 .tweet-date:before{
+	background-color: #0074c8;	
+}
+
+.tweet-container.container-2 .tweet-date:before{
+	background-color: #b4be34;	
+}
+
+.tweet-container.container-3 .tweet-date:before{
+	background-color: #ef3741;	
+}
+
+.twitter-tweet{
+	margin: 0;	
+	margin-bottom: 60px;
+	margin-top: 60px;
+	padding: 15px;
+	max-width: 300px;
+	height: 220;
+	background-color: white;
+	color: #808083;
+	border: solid #dbdbdb 1px;
+}
+
+/* triangle */
+.twitter-tweet:before{
+	content: "";
+	position: absolute;
+	margin-left: 144px;
+	margin-top: -21px;
+	width: 10px;
+	height: 10px;
+	background: #FFFFFF;
+	border-right: 1px solid #dbdbdb;
+	border-top: 1px solid #dbdbdb;
+	transform: rotate(-45deg)
+	 -moz-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+}
