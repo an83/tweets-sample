@@ -6,7 +6,7 @@ body{
 
 canvas{
 	margin-top: -60px;	
-	position: fixed;
+	position: absolute;
 	z-index: -1;
 }
 
