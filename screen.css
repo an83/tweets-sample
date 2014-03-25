@@ -16,19 +16,6 @@ p{
 	position: absolute;
 }
 
-/* circle */
-/*
-.tweet-date:before{
-	content: "";
-	position: absolute;
-	border-radius: 50%;
-	width: 36px;
-	height: 36px;
-	background-color: red;
-	margin-left: -45px;
-	margin-top: -10px;
-}*/
-
 .tweet-date{	
 	color: #363636;
 	position: absolute;
@@ -65,8 +52,6 @@ p{
 
 .twitter-tweet{
 	margin: 0;	
-	/*margin-bottom: 60px;
-	margin-top: 60px;*/
 	padding: 15px;		
 	background-color: white;
 	color: #808083;
@@ -76,44 +61,28 @@ p{
 
   /* Required for Down Triangle */
 .twitter-tweet:before, .twitter-tweet:after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-color: transparent;
-    border-top: 0;
-  }
-
-  /* Stroke */
-  .twitter-tweet:before {
-    top: -9px;
-    left: 120px;
-    
-    border-bottom-color: #dbdbdb;
-    border-width: 10px;
-  }
-
-  /* Fill */
-  .twitter-tweet:after {
-    top: -8px;
-    left: 121px;
-    border-bottom-color: white;
-    border-width: 9px;
-  }
-
-/* triangle */
-/*.twitter-tweet:before{
 	content: "";
 	position: absolute;
-	margin-left: 144px;
-	margin-top: -21px;
-	width: 10px;
-	height: 10px;
-	background: #FFFFFF;
-	border-right: 1px solid #dbdbdb;
-	border-top: 1px solid #dbdbdb;
-	transform: rotate(-45deg)
-	 -moz-transform: rotate(-45deg);
-	-webkit-transform: rotate(-45deg);
-}*/
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-color: transparent;
+	border-top: 0;
+}
+
+/* Stroke */
+.twitter-tweet:before {
+	top: -9px;
+	left: 120px;
+
+	border-bottom-color: #dbdbdb;
+	border-width: 10px;
+}
+
+/* Fill */
+.twitter-tweet:after {
+	top: -8px;
+	left: 121px;
+	border-bottom-color: white;
+	border-width: 9px;
+}

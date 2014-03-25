@@ -36,8 +36,9 @@ $.each(tweets, function(index, item) {
 
         var author = authorMatches[0].replace(/&mdash;[\s\w]+\(/, '').replace(/\)/, '')
 
-        // render(data, index);
-        
+        // test max characters 144
+        // status = "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis</p>";
+
         var $container = $('<div>', {
             "class":"tweet-container container-"+ index,
             "data-index": index
@@ -68,10 +69,10 @@ function updateSVG () {
 
   points = tweets.map(function (item, index) {
     if(isLargeWidth){
-      return {x: index * 200 + vOffset, y: index % 2 * 180 + hOffset};
+      return {x: index * 200 + vOffset, y: index % 2 * 200 + hOffset};
     }
     else{
-      return {x: vOffset, y: index * 180 + hOffset}; 
+      return {x: vOffset, y: index * 200 + hOffset}; 
     }  
   });
 
