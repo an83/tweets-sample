@@ -4,144 +4,117 @@ var tweets = [
   '435993116659564544',
   '435894915348709376'
 ]
-
-var svg = d3.select("svg");
-
-var line = d3.svg.line()
-    .x(function(d) { return d.x; })
-    .y(function(d) { return d.y; })
-    .interpolate("linear")
-    // .tension(0);
-
-
-var points = [{x: 100, y: 100}, {x: 200, y: 200}, {x: 400, y: 0}, {x: 600, y: 200}];
-points = tweets.map(function (item, index) {
-  return {x: index * 200 + 200, y: index % 2 * 180 + 100}  
-})
-
-
 var colors = ["#00bfd6", "#0074c8", "#b4be34", "#ef3741"];
 
-var x0, y0; 
-var lines = svg.append("g").attr("class", "lines"),
+var rectwidth = 260,
+    circleRadius = 20;
+
+var $tweets = $('#tweets'),
+    $svgContainer = $('#svgContainer');
+
+var svg; 
+
+function update (argument) {
+  var x0, y0;
+
+  if(svg){
+    svg.selectAll("g").remove();
+  }
+
+  $tweets.find('.tweet-container').remove();
+  $tweets.empty();
+  $svgContainer.empty();
+
+  var windowWidth = $(window).width();
+  var isLargeWidth = windowWidth >= 912;
+
+  var vOffset = 10 + rectwidth/2, hOffset = 20 + circleRadius/2;
+
+  var points = tweets.map(function (item, index) {
+    if(isLargeWidth){
+      return {x: index * 200 + vOffset, y: index % 2 * 180 + hOffset};
+    }
+    else{
+      return {x: vOffset, y: index * 180 + hOffset}; 
+    }  
+  });
+
+  var svg = d3.select("#svgContainer")
+              .append('svg');
+              
+  var lines = svg.append("g").attr("class", "lines"),
     circles = svg.append("g").attr("class", "circles");
 
-
-$.each(points, function (index, item) {
-  if(typeof x0 !== 'undefined' && typeof y0 !== 'undefined' ){    
-      lines.append("svg:line").
-      attr("x1", x0).
-      attr("y1", y0).
-      attr("x2", item.x).
-      attr("y2", item.y)
-      .attr("stroke-width", 1)
-      .attr('stroke', "#d1d1d1");  
+  if(isLargeWidth){
+    svg.attr('width', 880).attr('height', 400);
   }
-  
-  var node = circles.append("g")
-      .attr('transform', 'translate(' + item.x + ',' + item.y + ')');
+  else{
+    svg.attr('width', 280).attr('height', 740);
+  }
 
-    node.append('circle')
-    // .attr('cx', item.x)
-    // .attr('cy', item.y)
-    .attr('r', 20)
-    .attr('fill', colors[index]);
-
-    node.append('text')        
-    .attr('x', 35)
-    .attr('y', 0)
-    .text('test some text')
-    .html(function (argument) {
-      return 'test some text';
-    })
-
-    node.append('rect')        
-    .attr('x', -150)
-    .attr('y', 35)
-    .attr('width', 300)
-    .attr('height', 100)
-    .style('fill', 'white')
-    .attr()
-    
-
-    x0 = item.x;
-    y0 = item.y;
-});
-
-
-
-
-$.each(tweets, function(index, item) {
-  $.ajax({
-    url: 'https://api.twitter.com/1/statuses/oembed.json?id=' + item,
-    dataType: 'jsonp',
-    success: function(data) {
-
-        // remove script 
-        var content = data.html.replace('<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>', '</p>');
-
-        // extract date
-        var date = content.match(/\w+\s\d+,\s\d+/g);
-
-        // extract status message 
-        var status = content.replace(/<\/p>[\.\s\d\w\=\"\:\/\>\<\—\(\)&,;@]+<\/a>/g, '</p>');
-
-        // render(data, index);
-        var tweets = $('#tweets');        
-        var $container = $('<div>', {"class":"tweet-container container-"+ index})        
-          .append($('<div>', {"class":"tweet-date", "html": date}))
-          .append(status);
-
-        tweets.append($container);
+  $.each(points, function (index, item) {
+    if(typeof x0 !== 'undefined' && typeof y0 !== 'undefined' ){    
+        lines.append("line").
+        attr("x1", x0).
+        attr("y1", y0).
+        attr("x2", item.x).
+        attr("y2", item.y)
+        .attr("stroke-width", 1)
+        .attr('stroke', "#d1d1d1");  
     }
-  });  
-});
+    
+    var node = circles.append("g")
+        .attr('data-id', index)
+        .attr('transform', 'translate(' + item.x + ',' + item.y + ')');
 
-function render(data, index){  
+      node.append('circle')
+      .attr('r', circleRadius)
+      .attr('fill', colors[index]);
 
-  svg.append('circle')
-    // .attr("cx", 30)
-    // .attr("cy", 30)
-    .attr("r", 20)
-    .style("fill", "red");
+      node.append('text')
+      .attr('class', 'tweet-date')        
+      .attr('x', 35)
+      .attr('y', 0)
+      .text('test some text')
+      .html(function (argument) {
+        return 'test some text';
+      });
+
+      x0 = item.x;
+      y0 = item.y;
+  });
+  
+  $.each(tweets, function(index, item) {
+    $.ajax({
+      url: 'https://api.twitter.com/1/statuses/oembed.json?id=' + item,
+      dataType: 'jsonp',
+      success: function(data) {
+          
+
+          // remove script 
+          var content = data.html.replace('<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>', '</p>');
+
+          // extract date
+          var date = content.match(/\w+\s\d+,\s\d+/g);
+
+          // extract status message 
+          var status = content.replace(/<\/p>[\.\s\d\w\=\"\:\/\>\<\—\(\)&,;@]+<\/a>/g, '</p>');
+
+          // render(data, index);
+          
+          var $container = $('<div>', {"class":"tweet-container container-"+ index})        
+            .append($('<div>', {"class":"tweet-date", "html": date}))
+            .append(status);
+
+          $tweets.append($container);
+
+          var point = points[index];
+          $container.css('transform', 'translate(' + (point.x -rectwidth/2) + 'px,' + (point.y + 35) + 'px)');
+      }
+    });  
+  });
 }
 
-var canvas = document.getElementById('myCanvas');
-var context = canvas.getContext('2d');
-var centerX = canvas.width / 2;
-var centerY = canvas.height / 2;
-var radius = 15;
+$(window).resize(update);
 
-context.beginPath();
-context.moveTo(165, 30);
-
-context.lineTo(165, 600);
-context.stroke();
-
-// var y0 = 30;
-
-// context.beginPath();
-// context.arc(165, y0, radius, 0, 2 * Math.PI);
-// context.fillStyle = '#00bfd6';
-// context.fill();
-
-// var y = y0 + 220 * 1;
-
-// context.beginPath();
-// context.arc(165, y, radius, 0, 2 * Math.PI);
-// context.fillStyle = '#0074c8';
-// context.fill();
-
-// y = y0 + 220 * 2;
-
-// context.beginPath();
-// context.arc(165, y, radius, 0, 2 * Math.PI);
-// context.fillStyle = '#b4be34';
-// context.fill();
-
-// y = y0 + 220 * 3;
-
-// context.beginPath();
-// context.arc(165, y, radius, 0, 2 * Math.PI);
-// context.fillStyle = '#ef3741';
-// context.fill();
+update();
