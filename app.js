@@ -13,24 +13,60 @@ var $tweets = $('#tweets'),
     $svgContainer = $('#svgContainer');
 
 var svg; 
+var points;
+var vOffset = 10 + rectwidth/2, hOffset = 20 + circleRadius/2;
 
-function update (argument) {
+$.each(tweets, function(index, item) {
+  $.ajax({
+    url: 'https://api.twitter.com/1/statuses/oembed.json?id=' + item,
+    dataType: 'jsonp',
+    success: function(data) {
+        
+
+        // remove script 
+        var content = data.html.replace('<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>', '');
+
+        // extract date
+        var date = content.match(/\w+\s\d+,\s\d+/g);
+
+        // extract status message 
+        var status = content.match(/<p>[\.\s\d\w\=\"\:\/\>\<\—\(\)&,;@!#-?]+<\/p>/g);
+
+        var authorMatches = content.match(/&mdash;[\s\w]+\(@\w+\)/);
+
+        var author = authorMatches[0].replace(/&mdash;[\s\w]+\(/, '').replace(/\)/, '')
+
+        // render(data, index);
+        
+        var $container = $('<div>', {
+            "class":"tweet-container container-"+ index,
+            "data-index": index
+          })        
+          .append($('<div>', {"class":"tweet-date", "html": date}))
+          .append($('<div>', {"class":"twitter-tweet"})
+            .append(status)
+            .append($('<div>', {"class":"tweet-author", "html": author}))
+          );
+
+        $tweets.append($container);
+
+        updateTweetPosition($container);
+    }
+  });  
+});
+
+function updateSVG () {
   var x0, y0;
 
   if(svg){
     svg.selectAll("g").remove();
   }
-
-  $tweets.find('.tweet-container').remove();
-  $tweets.empty();
   $svgContainer.empty();
 
   var windowWidth = $(window).width();
   var isLargeWidth = windowWidth >= 912;
 
-  var vOffset = 10 + rectwidth/2, hOffset = 20 + circleRadius/2;
-
-  var points = tweets.map(function (item, index) {
+  points = tweets.map(function (item, index) {
     if(isLargeWidth){
       return {x: index * 200 + vOffset, y: index % 2 * 180 + hOffset};
     }
@@ -71,50 +107,24 @@ function update (argument) {
       .attr('r', circleRadius)
       .attr('fill', colors[index]);
 
-      node.append('text')
-      .attr('class', 'tweet-date')        
-      .attr('x', 35)
-      .attr('y', 0)
-      .text('test some text')
-      .html(function (argument) {
-        return 'test some text';
-      });
-
       x0 = item.x;
       y0 = item.y;
   });
-  
-  $.each(tweets, function(index, item) {
-    $.ajax({
-      url: 'https://api.twitter.com/1/statuses/oembed.json?id=' + item,
-      dataType: 'jsonp',
-      success: function(data) {
-          
+}
 
-          // remove script 
-          var content = data.html.replace('<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>', '</p>');
+function updateTweetPosition ($container) {
+  var index = $container.data('index');
+  var point = points[index];
+  $container.css('transform', 'translate(' + (point.x -rectwidth/2) + 'px,' + (point.y + 35) + 'px)');
+}
 
-          // extract date
-          var date = content.match(/\w+\s\d+,\s\d+/g);
-
-          // extract status message 
-          var status = content.replace(/<\/p>[\.\s\d\w\=\"\:\/\>\<\—\(\)&,;@]+<\/a>/g, '</p>');
-
-          // render(data, index);
-          
-          var $container = $('<div>', {"class":"tweet-container container-"+ index})        
-            .append($('<div>', {"class":"tweet-date", "html": date}))
-            .append(status);
-
-          $tweets.append($container);
-
-          var point = points[index];
-          $container.css('transform', 'translate(' + (point.x -rectwidth/2) + 'px,' + (point.y + 35) + 'px)');
-      }
-    });  
+function updatePositions () {
+  updateSVG();
+  $('.tweet-container').each(function (index, container) {
+    updateTweetPosition($(container));
   });
 }
 
-$(window).resize(update);
+$(window).resize(updatePositions);
 
-update();
+updateSVG();

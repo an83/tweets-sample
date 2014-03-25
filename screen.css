@@ -29,12 +29,16 @@ p{
 	margin-top: -10px;
 }*/
 
-.tweet-date{
-	display: none;
+.tweet-date{	
+	color: #363636;
 	position: absolute;
-	margin-left: 147px;
-	margin-top: -51px;
-	padding: 10px 10px 10px 45px;
+	margin-left: 114px;
+	margin-top: -56px;
+	padding: 10px 10px 10px 45px;	
+}
+
+.tweet-author{
+	font-weight: bold;
 }
 
 .tweet-container{
